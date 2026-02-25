@@ -51,21 +51,62 @@
  *   findCheapestAndCostliest(150, 80, 200) // => { cheapest: 80, costliest: 200 }
  */
 export function parseFare(fareString) {
-  // Your code here
+    if (typeof fareString !== "string") return -1;
+
+    let fare = parseFloat(fareString);
+    if (isNaN(fare)) return -1;
+
+    return fare;
 }
 
 export function roundFare(amount, decimalPlaces) {
-  // Your code here
+    // let fare = 0;
+    if (!Number.isInteger(decimalPlaces)) return "";
+
+    // parsing
+    amount = parseFloat(amount);
+    decimalPlaces = parseInt(decimalPlaces);
+
+    // validating
+    if (isNaN(amount) || decimalPlaces < 0) return "";
+
+    return amount.toFixed(decimalPlaces);
 }
 
 export function calculateSurge(baseFare, surgeMultiplier) {
-  // Your code here
-}
+    if (typeof baseFare !== "number" || typeof surgeMultiplier !== "number") return 0;
+    if (baseFare < 0 || surgeMultiplier < 0) return 0;
+    surgeMultiplier = parseFloat(surgeMultiplier);
 
-export function findCheapestAndCostliest(...fares) {
-  // Your code here
+    if (isNaN(baseFare) || isNaN(surgeMultiplier) || baseFare <= 0 || surgeMultiplier <= 0)
+        return 0;
+    return Math.ceil(baseFare * surgeMultiplier);
 }
+export function findCheapestAndCostliest(...fares) {
+    if (fares.length === 0) return null;
+
+    // console.log(typeof fares[0]);
+    let newArr = fares.filter((val) => {
+        let str = String(val).trim(); // checking for string
+        if (str === "") return false;
+        return !isNaN(Number(val)) && !/[^0-9.\-]/.test(str);
+    });
+    newArr = newArr.map((num) => Number(num));
+    if (newArr.length === 0) return null;
+    let cheapest = Math.min(...newArr);
+    let costliest = Math.max(...newArr);
+    return { cheapest, costliest };
+}
+// findCheapestAndCostliest(100, 200, 300, "tushar", "", " ");
+// let result = findCheapestAndCostliest("32", "33", NaN);
+// console.log(result);
 
 export function getDistanceDifference(from, to) {
-  // Your code here
+    from = parseInt(from);
+    to = parseInt(to);
+
+    if (isNaN(from) || isNaN(to)) return -1;
+    console.log(Math.abs(from - to));
+    return Math.abs(from - to);
 }
+// getDistanceDifference(10,7)

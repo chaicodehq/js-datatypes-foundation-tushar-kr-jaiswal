@@ -46,17 +46,72 @@
  *   updatePrices({meetha:30, saada:20}, 10)              // => {meetha:40, saada:30}
  */
 export function createPaanOrder(basePaan, customizations) {
-  // Your code here
+    // basePaan
+    if (
+        basePaan === null ||
+        typeof basePaan !== "object" ||
+        Array.isArray(basePaan) ||
+        Object.keys(basePaan).length === 0
+    )
+        return {};
+
+    // customization
+    if (
+        customizations === null ||
+        typeof customizations !== "object" ||
+        Array.isArray(customizations) ||
+        Object.keys(customizations).length === 0
+    )
+        return Object.assign({}, basePaan);
+
+    // assigning
+    return Object.assign({}, basePaan, customizations);
 }
 
 export function freezeMenu(menu) {
-  // Your code here
+    if (
+        menu === null ||
+        Array.isArray(menu) ||
+        typeof menu !== "object" ||
+        Object.keys(menu).length === 0
+    )
+        return {};
+
+    return Object.freeze(menu);
 }
 
 export function updatePrices(menu, increase) {
-  // Your code here
+    if (
+        menu === null ||
+        typeof menu !== "object" ||
+        Array.isArray(menu) ||
+        Object.keys(menu).length === 0 ||
+        typeof increase !== "number"
+    )
+        return {};
+    const entry = Object.entries(menu);
+    // console.log(entry)
+
+    const newArr = entry.map(([key, value]) => {
+        return [key, value + increase];
+    });
+
+    // console.log(newArr)
+    let fromEntriesArr = Object.fromEntries(newArr);
+    // console.log(fromEntriesArr);
+    return fromEntriesArr;
 }
 
 export function mergeDailySpecials(regularMenu, specialsMenu) {
-  // Your code here
+    regularMenu =
+        typeof regularMenu === "object" && regularMenu !== null && !Array.isArray(regularMenu)
+            ? regularMenu
+            : {};
+
+    specialsMenu =
+        typeof specialsMenu === "object" && specialsMenu !== null && !Array.isArray(specialsMenu)
+            ? specialsMenu
+            : {};
+
+    return { ...regularMenu, ...specialsMenu };
 }

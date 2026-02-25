@@ -53,17 +53,83 @@
  *   // => "RAJASTHANI THALI (Veg) - Items: dal - Rs.250.00"
  */
 export function createThaliDescription(thali) {
-  // Your code here
+    if (
+        typeof thali !== "object" ||
+        Array.isArray(thali) ||
+        thali === null ||
+        Object.keys(thali).length === 0
+    )
+        return "";
+
+    let { name, isVeg, items, price } = thali;
+
+    if (!name || typeof isVeg !== "boolean" || !items || !price) return "";
+
+    let finalThali = `${name?.toUpperCase()} (${isVeg ? "Veg" : "Non-Veg"}) - Items: ${items.join(", ")} - Rs.${price.toFixed(2)}`;
+
+    return finalThali;
 }
 
 export function getThaliStats(thalis) {
-  // Your code here
+    if (typeof thalis !== "object" || !Array.isArray(thalis) || thalis.length === 0) return null;
+    let totalThalis = thalis.length;
+    // let vegCount;
+    let vegCount = thalis.filter((object) => object.isVeg).length;
+    let nonVegCount = totalThalis - vegCount;
+    let avgPrice = thalis.reduce((total, object) => total + object.price, 0) / totalThalis;
+    avgPrice = avgPrice.toFixed(2);
+    let priceArr = thalis.map((object) => Number(object.price));
+    let cheapest = Math.min(...priceArr);
+    let costliest = Math.max(...priceArr);
+    let names = thalis.map((obj) => obj.name);
+    console.log({ totalThalis, vegCount, nonVegCount, avgPrice, cheapest, costliest, names });
+    return { totalThalis, vegCount, nonVegCount, avgPrice, cheapest, costliest, names };
 }
 
 export function searchThaliMenu(thalis, query) {
-  // Your code here
+    if (typeof thalis !== "object" || !Array.isArray(thalis) || thalis === null) return [];
+    if (typeof query !== "string" && typeof query !== "boolean") return [];
+    if (typeof query !== "string" && query.trim() === "") return thalis;
+    console.log(query);
+    query = query.toLowerCase();
+
+    return thalis.filter((thali) => {
+        let name = thali.name.toLowerCase().includes(query);
+
+        let price = String(thali.price) === query;
+
+        let isVeg;
+        if (query === "true") {
+            isVeg = thali.isVeg === true;
+        } else if (query === "false") {
+            isVeg = thali.isVeg === false;
+        } else {
+            isVeg = false;
+        }
+
+        let item = thali?.items
+            ? thali.items.some((item) => item.toLowerCase().includes(query))
+            : false;
+
+        return name || price || isVeg || item;
+    });
 }
 
 export function generateThaliReceipt(customerName, thalis) {
-  // Your code here
+    // validation
+    if (typeof customerName !== "string" || customerName.trim() === "") return "";
+    if (!Array.isArray(thalis) || thalis.length === 0) return "";
+
+    // declaration
+    let itemNames = thalis.map((thali) => `- ${thali.name} x Rs.${thali.price}`).join("\n");
+    let total = thalis.reduce((acc, thali) => acc + Number(thali.price), 0);
+
+    // receipt format
+    return `THALI RECEIPT\n
+    ---
+    Customer: ${customerName.toUpperCase()}
+    ${itemNames}
+    ---
+    Total: Rs.${total}
+    Items: ${thalis.length}`;
 }
